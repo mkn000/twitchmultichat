@@ -1,4 +1,5 @@
 const {app, BrowserWindow, Menu, session, ipcMain, shell} = require('electron');
+const windowStateKeeper = require('electron-window-state');
 const {exec} = require('child_process');
 const path = require('path');
 const server = require('./server');
@@ -8,9 +9,15 @@ const cheerio = require('cheerio');
 let mainWindow;
 
 function createWindow() {
+  let mainWindowState = windowStateKeeper({
+    defaultWidth: 350,
+    defaultHeight: 680,
+  });
   mainWindow = new BrowserWindow({
-    width: 350,
-    height: 680,
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
     title: 'Twitch Multi Chat',
     webPreferences: {
       preload: path.join(app.getAppPath(), 'preload.js'),
@@ -20,7 +27,7 @@ function createWindow() {
   Menu.setApplicationMenu(null);
   mainWindow.loadURL('http://localhost:3000');
   mainWindow.setMinimumSize(350, 100);
-
+  mainWindowState.manage(mainWindow);
   //this.mainWindow.openDevTools();
 
   mainWindow.on('closed', function () {
