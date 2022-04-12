@@ -64,6 +64,7 @@ export default {
     };
   },
   mounted() {
+    document.title = 'Twitch Multi Chat';
     this.getUser();
     window.myApi.receive('refresh_user', (e) => {
       this.getUser();
