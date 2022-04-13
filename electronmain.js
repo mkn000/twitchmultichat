@@ -1,4 +1,12 @@
-const {app, BrowserWindow, Menu, session, ipcMain, shell} = require('electron');
+const {
+  app,
+  BrowserWindow,
+  Menu,
+  nativeImage,
+  session,
+  ipcMain,
+  shell,
+} = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const {exec} = require('child_process');
 const path = require('path');
@@ -19,6 +27,7 @@ function createWindow() {
     width: mainWindowState.width,
     height: mainWindowState.height,
     title: 'Twitch Multi Chat',
+    icon: nativeImage.createFromDataURL('./icon.png'),
     webPreferences: {
       preload: path.join(app.getAppPath(), 'preload.js'),
       nodeIntegration: true,

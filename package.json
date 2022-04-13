@@ -4,7 +4,8 @@
   "description": "Twitch Multi Chat",
   "main": "electronmain.js",
   "scripts": {
-    "start": "vue-cli-service build && electron ."
+    "build": "vue-cli-service build",
+    "start": "electron ."
   },
   "author": "mkn000",
   "license": "ISC",
