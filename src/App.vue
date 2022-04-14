@@ -201,7 +201,7 @@ button:hover {
 .infobar {
   display: flex;
   flex-direction: row;
-  height: 70px;
+  height: 1rem;
   margin: 10px 0px;
   padding: 0;
 }

@@ -37,7 +37,7 @@ function createWindow() {
   mainWindow.loadURL('http://localhost:3000');
   mainWindow.setMinimumSize(350, 100);
   mainWindowState.manage(mainWindow);
-  //this.mainWindow.openDevTools();
+  mainWindow.openDevTools();
 
   mainWindow.on('closed', function () {
     mainWindow = null;
@@ -141,7 +141,7 @@ app.on('browser-window-created', (e, w) => {
   w.webContents.on('will-navigate', (e2, url) => {
     if (url === 'https://www.twitch.tv/?no-reload=true') {
       e.preventDefault();
-      this.mainWindow.webContents.send('refresh_user');
+      mainWindow.webContents.send('refresh_user');
       w.close();
     }
   });
