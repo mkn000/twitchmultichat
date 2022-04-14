@@ -14,6 +14,11 @@ const server = require('./server');
 const axios = require('axios').default;
 const cheerio = require('cheerio');
 
+const setupEvents = require('./installers/setupEvents')
+if (setupEvents.handleSquirrelEvent()) {
+   // squirrel event handled and app will exit in 1000ms, so don't do anything else
+}
+
 let mainWindow;
 
 function createWindow() {
