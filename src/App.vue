@@ -9,12 +9,12 @@
     <div id="user">
       <div v-if="username">
         <span>{{ username }}</span>
-        <button @click="logOut" title="Log out">
+        <button @click="logOut" title="Sign out">
           <font-awesome-icon icon="sign-out-alt"></font-awesome-icon>
         </button>
       </div>
-      <div v-else @click="login">
-        <span>Not logged in</span>
+      <div v-else @click="signIn">
+        <span>Sign in</span>
       </div>
     </div>
   </div>
@@ -88,8 +88,8 @@ export default {
         this.joinField = '';
       }
     },
-    logOut() {
-      window.myApi.send('log_out');
+    signOut() {
+      window.myApi.send('sign_out');
       this.getUser();
     },
     close(channel) {
@@ -98,9 +98,9 @@ export default {
       this.channels.splice(ix, 1);
       //window.myApi.send('close_chat', ix);
     },
-    login() {
+    signIn() {
       console.log('attempting login');
-      window.myApi.send('sub_window', 'login');
+      window.myApi.send('sign_in');
     },
   },
 };
@@ -135,6 +135,10 @@ body {
 
 #user {
   color: rgb(255, 255, 255);
+}
+
+#user:hover {
+  cursor: pointer;
 }
 
 .my-splitter {

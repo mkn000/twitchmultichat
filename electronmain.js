@@ -14,9 +14,9 @@ const server = require('./server');
 const axios = require('axios').default;
 const cheerio = require('cheerio');
 
-const setupEvents = require('./installers/setupEvents')
+const setupEvents = require('./installers/setupEvents');
 if (setupEvents.handleSquirrelEvent()) {
-   // squirrel event handled and app will exit in 1000ms, so don't do anything else
+  // squirrel event handled and app will exit in 1000ms, so don't do anything else
 }
 
 let mainWindow;
@@ -32,7 +32,7 @@ function createWindow() {
     width: mainWindowState.width,
     height: mainWindowState.height,
     title: 'Twitch Multi Chat',
-    icon: nativeImage.createFromDataURL('./icon.png'),
+    icon: path.join(app.getAppPath(), 'icon.ico'),
     webPreferences: {
       preload: path.join(app.getAppPath(), 'preload.js'),
       nodeIntegration: true,
@@ -42,10 +42,30 @@ function createWindow() {
   mainWindow.loadURL('http://localhost:3000');
   mainWindow.setMinimumSize(350, 100);
   mainWindowState.manage(mainWindow);
-  mainWindow.openDevTools();
+  //mainWindow.openDevTools();
 
   mainWindow.on('closed', function () {
     mainWindow = null;
+  });
+}
+
+function signInWindow() {
+  let mainWindowState = windowStateKeeper({
+    defaultWidth: 350,
+    defaultHeight: 680,
+  });
+  let subWindow = new BrowserWindow({
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
+    title: 'Sign In',
+    icon: path.join(app.getAppPath(), 'icon.ico'),
+  });
+  Menu.setApplicationMenu(null);
+  subWindow.loadURL('https://twitch.tv/login');
+  subWindow.on('closed', function () {
+    subWindow = null;
   });
 }
 
@@ -67,7 +87,11 @@ ipcMain.handle('user_info', () => {
     .catch((err) => console.err(err));
 });
 
-ipcMain.on('log_out', () => {
+ipcMain.on('sign_in', () => {
+  signInWindow();
+});
+
+ipcMain.on('sign_out', () => {
   session.defaultSession
     .clearStorageData({storages: ['cookies']})
     .then(() => {
