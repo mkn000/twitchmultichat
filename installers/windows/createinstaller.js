@@ -20,6 +20,7 @@ function getInstallerConfig () {
     outputDirectory: path.join(outPath, 'windows-installer'),
     exe: 'twitchmultichat.exe',
     setupExe: 'TwitchMultiChatInstaller.exe',
-    setupIcon: path.join(rootPath, 'icon.ico')
+    setupIcon: path.join(rootPath, 'icon.ico'),
+    iconUrl: "https://github.com/mkn000/twitchmultichat/raw/master/icon.ico"
   })
 }

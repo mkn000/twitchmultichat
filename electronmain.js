@@ -32,7 +32,7 @@ function createWindow() {
     width: mainWindowState.width,
     height: mainWindowState.height,
     title: 'Twitch Multi Chat',
-    icon: nativeImage.createFromDataURL('./icon.png'),
+    icon: path.join(app.getAppPath(), 'icon.ico'),
     webPreferences: {
       preload: path.join(app.getAppPath(), 'preload.js'),
       nodeIntegration: true,
