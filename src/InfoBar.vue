@@ -1,20 +1,22 @@
 <template>
-  <div id="header" title="Open in browser" @click="openBrowser">
-    <div class="info" v-if="live">
-      <div class="info-bottom" v-if="host">{{ channel }} is hosting</div>
+  <div id="header">
+    <div class="info" v-if="live" :title="title">
+      <div class="info-host" v-if="host">{{ channel }} is hosting</div>
       <div class="info-top">{{ channelCategory }}</div>
-      <div class="info-bottom">{{ title }}</div>
     </div>
     <div class="info" v-else>
       <div class="info-top">{{ channel }}</div>
     </div>
 
     <div class="buttons">
-      <button @click="$emit('close_chat', channel)">
-        <font-awesome-icon icon="window-close" />
+      <button @click="openBrowser" title="Open in browser">
+        <font-awesome-icon icon="external-link-alt" />
       </button>
-      <button @click="fetchInfo">
-        <font-awesome-icon icon="sync-alt"></font-awesome-icon>
+      <button @click="fetchInfo" title="Refresh information">
+        <font-awesome-icon icon="sync-alt" />
+      </button>
+      <button @click="$emit('close_chat', channel)" title="Close chat">
+        <font-awesome-icon icon="window-close" />
       </button>
     </div>
   </div>
@@ -76,9 +78,6 @@ export default {
   flex-direction: row;
   height: inherit;
 }
-#header:hover {
-  cursor: pointer;
-}
 
 .info {
   display: flex;
@@ -91,11 +90,16 @@ export default {
   font-size: 1.15rem;
 }
 
-.info-bottom {
+.info-host {
   font-size: 0.9rem;
 }
 
+.buttons {
+  display: flex;
+  flex-direction: row;
+}
+
 button {
-  height: 50%;
+  height: fit-content;
 }
 </style>
