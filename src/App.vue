@@ -205,7 +205,6 @@ button:hover {
 .infobar {
   display: flex;
   flex-direction: row;
-  height: 1rem;
   margin: 10px 0px;
   padding: 0;
 }
@@ -217,6 +216,7 @@ button:hover {
 .chat {
   flex: 1 1 auto;
   display: flex;
+  margin: 1px 0;
 }
 
 iframe {

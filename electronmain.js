@@ -39,7 +39,14 @@ function createWindow() {
     },
   });
   Menu.setApplicationMenu(null);
-  mainWindow.loadURL('http://localhost:3000');
+  mainWindow.loadURL('http://localhost:3000').then (_ => {
+    const dataPath =
+      app.isPackaged ?
+      path.join(process.resourcesPath, 'ext','FrankerFaceZ') :
+      path.join(__dirname, './src/ext/FrankerFaceZ');
+      
+      session.defaultSession.loadExtension(dataPath,{allowFileAcces: true,});
+  });
   mainWindow.setMinimumSize(350, 100);
   mainWindowState.manage(mainWindow);
   //mainWindow.openDevTools();
@@ -155,14 +162,7 @@ ipcMain.on('open_browser', (e, channel) => {
 });
 
 app.on('ready', () => {
-  //vm = new ViewManager();
   createWindow();
-  session.defaultSession.loadExtension(
-    path.join(__dirname, './src/ext/FrankerFaceZ'),
-    {
-      allowFileAcces: true,
-    }
-  );
 });
 
 //close login window when done
