@@ -200,6 +200,7 @@ button:hover {
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
 }
 
 .infobar {
@@ -217,6 +218,7 @@ button:hover {
   flex: 1 1 auto;
   display: flex;
   margin: 1px 0;
+  width: 100%;
 }
 
 iframe {
@@ -224,6 +226,7 @@ iframe {
   border-style: ridge;
   border-width: thin;
   border-color: darkmagenta;
+  width: 100;
 }
 
 #notice {
