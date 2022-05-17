@@ -15,6 +15,7 @@ const axios = require('axios').default;
 const cheerio = require('cheerio');
 
 const setupEvents = require('./installers/setupEvents');
+
 if (setupEvents.handleSquirrelEvent()) {
   // squirrel event handled and app will exit in 1000ms, so don't do anything else
 }
@@ -109,14 +110,22 @@ ipcMain.on('sign_out', () => {
 });
 
 ipcMain.handle('channel_info', (_e, channel) => {
+  let info = {streamer: '', category: '', title: '', live: null};
   return new Promise((resolve) => {
     exec(`streamlink --json twitch.tv/${channel}`, (error, stdout, stderr) => {
       if (error || stderr) {
         //if command not found
-        resolve(alternateFetch(channel));
+        if (!error.signal) {
+          info.live = false;
+          info.streamer = channel;
+          info.category = '(Offline)';
+          info.title = 'Channel offline';
+          resolve(info);
+        } else {
+          resolve(alternateFetch(channel));
+        }
       } else {
         const resp = JSON.parse(stdout);
-        let info = {streamer: '', category: '', title: '', live: null};
         if (resp.metadata) {
           //live or hosting
           info.live = true;
@@ -126,6 +135,8 @@ ipcMain.handle('channel_info', (_e, channel) => {
         } else {
           //offline
           info.live = false;
+          info.category = '(Offline)';
+          info.title = 'Channel offline';
         }
         resolve(info);
       }
@@ -164,13 +175,23 @@ app.on('ready', () => {
   createWindow();
 });
 
-//close login window when done
+//handle links
 app.on('browser-window-created', (e, w) => {
   w.webContents.on('will-navigate', (e2, url) => {
     if (url === 'https://www.twitch.tv/?no-reload=true') {
+      //close login window on success
       e.preventDefault();
       mainWindow.webContents.send('refresh_user');
       w.close();
+    } else if (
+      url === 'https://twitch.tv/popout/frankerfacez/chat?ffz-settings'
+    ) {
+      //ffz settings open internally
+    } else {
+      //other links open in default browser
+      e.preventDefault();
+      w.close();
+      shell.openExternal(url).catch((err) => console.err(err));
     }
   });
 });

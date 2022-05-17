@@ -2,10 +2,14 @@
   <div id="header">
     <div class="info" v-if="live" :title="title">
       <div class="info-host" v-if="host">{{ channel }} is hosting</div>
-      <div class="info-top">{{ channelCategory }}</div>
+      <div class="info-top">
+        {{ streamer }}<br />
+        <span v-if="category">{{ category }}</span>
+      </div>
     </div>
     <div class="info" v-else>
       <div class="info-top">{{ channel }}</div>
+      <span v-if="category">{{ category }}</span>
     </div>
 
     <div class="buttons">
@@ -33,19 +37,13 @@ export default {
       fetcher: null,
       streamer: '',
       title: '',
-      category: '',
+      category: null,
       live: null,
       host: null,
     };
   },
-  computed: {
-    channelCategory() {
-      if (this.category) {
-        return `${this.streamer} | ${this.category}`;
-      } else {
-        return this.streamer;
-      }
-    },
+  created() {
+    this.fetchInfo();
   },
   methods: {
     fetchInfo: function () {
@@ -66,9 +64,6 @@ export default {
       window.myApi.send('open_browser', this.channel);
     },
   },
-  created() {
-    this.fetchInfo();
-  },
 };
 </script>
 
@@ -84,10 +79,12 @@ export default {
   flex-direction: column;
   width: 100%;
   color: white;
+  height: 2.5rem;
 }
 
 .info-top {
-  font-size: 1.15rem;
+  font-size: 1rem;
+  text-overflow: ellipsis;
 }
 
 .info-host {
