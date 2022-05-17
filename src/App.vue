@@ -21,7 +21,8 @@
   <div class="my-splitter" v-if="this.channels.length"></div>
   <splitpanes
     vertical
-    @resize="resizeView"
+    @resize="disableMouse"
+    @resized="enableMouse"
     class="default-theme"
     style="height: 100%"
   >
@@ -32,7 +33,10 @@
         </div>
         <div class="chat">
           <iframe
-            class="chat_iframe"
+            :class="{
+              disableMouse: disableMouseEvents,
+              enableMouse: !disableMouseEvents,
+            }"
             :src="`https://www.twitch.tv/embed/${c}/chat?parent=localhost`"
             sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-modals allow-storage-access-by-user-activation"
           >
@@ -58,6 +62,7 @@ export default {
   },
   data() {
     return {
+      disableMouseEvents: false,
       joinField: '',
       username: null,
       channels: [],
@@ -96,11 +101,16 @@ export default {
       console.log('close this: ', channel);
       const ix = this.channels.findIndex((c) => c === channel);
       this.channels.splice(ix, 1);
-      //window.myApi.send('close_chat', ix);
     },
     signIn() {
       console.log('attempting login');
       window.myApi.send('sign_in');
+    },
+    disableMouse() {
+      this.disableMouseEvents = true;
+    },
+    enableMouse() {
+      this.disableMouseEvents = false;
     },
   },
 };
@@ -150,6 +160,7 @@ body {
 
 .splitpanes.default-theme .splitpanes__pane {
   background-color: rgba(1, 1, 1, 0);
+  min-width: 290px;
 }
 
 .default-theme .splitpanes--vertical > .splitpanes__splitter,
@@ -244,5 +255,12 @@ iframe {
 #notice > span {
   color: rgb(255, 255, 255);
   font-size: 2rem;
+}
+
+.disableMouse {
+  pointer-events: none;
+}
+.enableMouse {
+  pointer-events: auto;
 }
 </style>
