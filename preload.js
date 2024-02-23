@@ -3,7 +3,7 @@ const {exec} = require('child_process');
 
 contextBridge.exposeInMainWorld('myApi', {
   send: (channel, data) => {
-    console.log('sending:' + data);
+    console.log(`${channel} sending: ${data}`);
     ipcRenderer.send(channel, data);
   },
   receive: (channel, func) => {

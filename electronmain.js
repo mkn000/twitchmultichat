@@ -1,12 +1,4 @@
-const {
-  app,
-  BrowserWindow,
-  Menu,
-  nativeImage,
-  session,
-  ipcMain,
-  shell,
-} = require('electron');
+const {app, BrowserWindow, Menu, session, ipcMain, shell} = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const {exec} = require('child_process');
 const path = require('path');
@@ -27,6 +19,7 @@ function createWindow() {
     defaultWidth: 350,
     defaultHeight: 680,
   });
+  console.log(mainWindowState.x, mainWindowState.y);
   mainWindow = new BrowserWindow({
     x: mainWindowState.x,
     y: mainWindowState.y,
@@ -49,7 +42,7 @@ function createWindow() {
   });
   mainWindow.setMinimumSize(350, 100);
   mainWindowState.manage(mainWindow);
-  //mainWindow.openDevTools();
+  mainWindow.openDevTools();
 
   mainWindow.on('closed', function () {
     mainWindow = null;
@@ -57,15 +50,11 @@ function createWindow() {
 }
 
 function signInWindow() {
-  let mainWindowState = windowStateKeeper({
-    defaultWidth: 350,
-    defaultHeight: 680,
-  });
   let subWindow = new BrowserWindow({
-    x: mainWindowState.x,
-    y: mainWindowState.y,
-    width: mainWindowState.width,
-    height: mainWindowState.height,
+    x: 800,
+    y: 300,
+    width: 600,
+    height: 800,
     title: 'Sign In',
     icon: path.join(app.getAppPath(), 'icon.ico'),
   });
@@ -76,13 +65,13 @@ function signInWindow() {
   });
 }
 
-ipcMain.handle('user_info', () => {
-  return session.defaultSession.cookies
+ipcMain.handle('user_info', async () => {
+  return await session.defaultSession.cookies
     .get({url: 'https://twitch.tv', name: 'auth-token'})
     .then((c) => {
       if (c.length) {
         return session.defaultSession.cookies
-          .get({url: 'https://twitch.tv', name: 'name'})
+          .get({url: 'https://twitch.tv', name: 'login'})
           .then((c2) => {
             return c2[0].value;
           });
@@ -91,7 +80,7 @@ ipcMain.handle('user_info', () => {
         return null;
       }
     })
-    .catch((err) => console.err(err));
+    .catch((err) => console.error(err));
 });
 
 ipcMain.on('sign_in', () => {
@@ -105,7 +94,7 @@ ipcMain.on('sign_out', () => {
       console.log('cookies cleared');
     })
     .catch((err) => {
-      console.err('error clearing cookies: ', err);
+      console.error('error clearing cookies: ', err);
     });
 });
 
@@ -144,9 +133,9 @@ ipcMain.handle('channel_info', (_e, channel) => {
   });
 });
 
-function alternateFetch(channel) {
+async function alternateFetch(channel) {
   let info = {streamer: '', title: '', live: true};
-  return axios
+  return await axios
     .get(`https://twitch.tv/${channel}`)
     .then((res) => {
       const $ = cheerio.load(res.data);
@@ -161,14 +150,14 @@ function alternateFetch(channel) {
       return info;
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
 }
 
 ipcMain.on('open_browser', (e, channel) => {
   shell
     .openExternal(`https://twitch.tv/${channel}`)
-    .catch((err) => console.err(err));
+    .catch((err) => console.error(err));
 });
 
 app.on('ready', () => {
@@ -191,7 +180,7 @@ app.on('browser-window-created', (e, w) => {
       //other links open in default browser
       e.preventDefault();
       w.close();
-      shell.openExternal(url).catch((err) => console.err(err));
+      shell.openExternal(url).catch((err) => console.error(err));
     }
   });
 });
