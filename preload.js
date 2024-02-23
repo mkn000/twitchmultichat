@@ -1,5 +1,4 @@
 const {contextBridge, ipcRenderer} = require('electron');
-const {exec} = require('child_process');
 
 contextBridge.exposeInMainWorld('myApi', {
   send: (channel, data) => {

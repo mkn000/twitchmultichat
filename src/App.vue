@@ -6,6 +6,7 @@
         <font-awesome-icon icon="plus-square"></font-awesome-icon>
       </button>
     </form>
+    <button @click="openTwitch" title="Twich">Twitch</button>
     <div id="user">
       <div v-if="username">
         <span>{{ username }}</span>
@@ -37,7 +38,7 @@
               disableMouse: disableMouseEvents,
               enableMouse: !disableMouseEvents,
             }"
-            :src="`https://www.twitch.tv/embed/${c}/chat?parent=localhost`"
+            :src="`https://www.twitch.tv/embed/${c}/chat?darkpopout&parent=localhost`"
             sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-modals allow-storage-access-by-user-activation"
           >
           </iframe>
@@ -111,6 +112,9 @@ export default {
     },
     enableMouse() {
       this.disableMouseEvents = false;
+    },
+    openTwitch() {
+      window.myApi.send('open_twitch');
     },
   },
 };

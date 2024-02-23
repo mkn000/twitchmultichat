@@ -49,6 +49,22 @@ function createWindow() {
   });
 }
 
+function twitchHome() {
+  let subWindow = new BrowserWindow({
+    x: 800,
+    y: 300,
+    width: 600,
+    height: 800,
+    title: 'Sign In',
+    icon: path.join(app.getAppPath(), 'icon.ico'),
+  });
+  Menu.setApplicationMenu(null);
+  subWindow.loadURL('https://twitch.tv/');
+  subWindow.on('closed', function () {
+    subWindow = null;
+  });
+}
+
 function signInWindow() {
   let subWindow = new BrowserWindow({
     x: 800,
@@ -86,7 +102,9 @@ ipcMain.handle('user_info', async () => {
 ipcMain.on('sign_in', () => {
   signInWindow();
 });
-
+ipcMain.on('open_twitch', function () {
+  twitchHome();
+});
 ipcMain.on('sign_out', () => {
   session.defaultSession
     .clearStorageData({storages: ['cookies']})
