@@ -42,7 +42,7 @@ function createWindow() {
   });
   mainWindow.setMinimumSize(350, 100);
   mainWindowState.manage(mainWindow);
-  mainWindow.openDevTools();
+  app.isPackaged ? console.log('') : mainWindow.openDevTools();
 
   mainWindow.on('closed', function () {
     mainWindow = null;
@@ -172,7 +172,7 @@ async function alternateFetch(channel) {
     });
 }
 
-ipcMain.on('open_browser', (e, channel) => {
+ipcMain.on('open_browser', (_e, channel) => {
   shell
     .openExternal(`https://twitch.tv/${channel}`)
     .catch((err) => console.error(err));
@@ -180,6 +180,10 @@ ipcMain.on('open_browser', (e, channel) => {
 
 app.on('ready', () => {
   createWindow();
+  session.defaultSession.on('extension-loaded', (event, extension) => {
+    event.preventDefault();
+    console.log(`${extension.name} loaded`);
+  });
 });
 
 //handle links
